@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+		http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+		http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+
+
+    <changeSet id="1" author="terrifyingAnt">
+
+    <!--* ТАБЛИЧКА CATEGORY-->
+    <createTable tableName="category_table">
+        <column name="category_id" type="int">
+            <constraints nullable="false" unique="true" primaryKey="true"/>
+        </column>
+        <column name="category" type="varchar"/>
+    </createTable>
+
+
+    <!--* ТАБЛИЧКА FILEVERSION-->
+    <createTable tableName="fileversion_table">
+        <column name="version_id" type="int">
+            <constraints nullable="false" unique="true" primaryKey="true"/>
+        </column>
+        <column name="version" type="varchar"/>
+    </createTable>
+
+
+    <!--* ТАБЛИЧКА USER-->
+    <createTable tableName="user_table">
+        <column name="user_id" type="int">
+            <constraints nullable="false" unique="true" primaryKey="true"/>
+        </column>
+        <column name="user_name" type="varchar"/>
+    </createTable>
+
+
+    <!--* ТАБЛИЧКА TYPE-->
+    <createTable tableName="type_table">
+        <column name="file_type_id" type="int">
+            <constraints nullable="false" unique="true" primaryKey="true"/>
+        </column>
+        <column name="file_type" type="varchar"/>
+        <column name="category_id" type="int"/>
+    </createTable>
+
+    <addForeignKeyConstraint baseTableName="type_table" baseColumnNames="category_id"
+      constraintName="category_id1_fk"
+      referencedTableName="category_table" referencedColumnNames="category_id"/>
+
+
+    <!--* ТАБЛИЧКА FILE-->
+    <createTable tableName="file_table">
+        <column name="file_id" type="int">
+            <constraints nullable="false" unique="true" primaryKey="true"/>
+        </column>
+        <column name="file_type_id" type="int"/>
+        <column name="file_name" type="varchar"/>
+        <column name="path" type="varchar"/>
+        <column name="size" type="real"/>
+        <column name="hash" type="varchar"/>
+        <column name="about" type="varchar"/>
+        <column name="category_id" type="int"/>
+
+    </createTable>
+
+    <addForeignKeyConstraint baseTableName="file_table" baseColumnNames="file_type_id"
+      constraintName="file_type_id1_fk"
+      referencedTableName="type_table" referencedColumnNames="file_type_id"/>
+
+
+    <!--* ТАБЛИЧКА DELETEEVENT-->
+    <createTable tableName="deleteevent_table">
+        <column name="delete_event_id" type="int">
+            <constraints nullable="false" unique="true" primaryKey="true"/>
+        </column>
+        <column name="user_id" type="int"/>
+        <column name="delete_time" type="timestamp"/>
+    </createTable>
+
+    <addForeignKeyConstraint baseTableName="deleteevent_table" baseColumnNames="user_id"
+      constraintName="user_id1_fk"
+      referencedTableName="user_table" referencedColumnNames="user_id"/>
+
+
+    <!--* ТАБЛИЧКА UPDATEEVENT-->
+    <createTable tableName="updateevent_table">
+        <column name="update_event_id" type="int">
+            <constraints nullable="false" unique="true" primaryKey="true"/>
+        </column>
+        <column name="user_id" type="int"/>
+        <column name="update_time" type="timestamp"/>
+    </createTable>
+
+    <addForeignKeyConstraint baseTableName="updateevent_table" baseColumnNames="user_id"
+      constraintName="user_id2_fk"
+      referencedTableName="user_table" referencedColumnNames="user_id"/>
+
+
+    <!--* ТАБЛИЧКА UPLOADEVENT-->
+    <createTable tableName="uploadevent_table">
+        <column name="upload_event_id" type="int" defaultValue="null">
+            <constraints unique="true" primaryKey="true"/>
+        </column>
+        <column name="user_id" type="int" defaultValue="null"/>
+        <column name="upload_time" type="timestamp" defaultValue="null"/>
+    </createTable>
+
+    <addForeignKeyConstraint baseTableName="uploadevent_table" baseColumnNames="user_id"
+      constraintName="user_id3_fk"
+      referencedTableName="user_table" referencedColumnNames="user_id"/>
+
+
+    <!--* ТАБЛИЧКА VERSIONSLIST-->
+    <createTable tableName="versionslist_table">
+        <column name="version_list_id" type="int">
+            <constraints nullable="false" unique="true" primaryKey="true"/>
+        </column>
+        <column name="version_id" type="int"/>
+        <column name="file_id" type="int"/>
+        <column name="update_event_id" type="int"/>
+        <column name="upload_event_id" type="int"/>
+        <column name="delete_event_id" type="int"/>
+
+    </createTable>
+
+    <addForeignKeyConstraint baseTableName="versionslist_table" baseColumnNames="version_id"
+      constraintName="version_id1_fk"
+      referencedTableName="fileversion_table" referencedColumnNames="version_id"/>
+    
+    <addForeignKeyConstraint baseTableName="versionslist_table" baseColumnNames="file_id"
+      constraintName="file_id1_fk"
+      referencedTableName="file_table" referencedColumnNames="file_id"/>
+
+    <addForeignKeyConstraint baseTableName="versionslist_table" baseColumnNames="update_event_id"
+      constraintName="update_event_id1_fk"
+      referencedTableName="updateevent_table" referencedColumnNames="update_event_id"/>
+
+    <addForeignKeyConstraint baseTableName="versionslist_table" baseColumnNames="delete_event_id"
+      constraintName="delete_event_id1_fk"
+      referencedTableName="deleteevent_table" referencedColumnNames="delete_event_id"/>
+
+    <addForeignKeyConstraint baseTableName="versionslist_table" baseColumnNames="upload_event_id"
+      constraintName="upload_event_id1_fk"
+      referencedTableName="uploadevent_table" referencedColumnNames="upload_event_id"/>
+    
+    </changeSet>
+</databaseChangeLog>

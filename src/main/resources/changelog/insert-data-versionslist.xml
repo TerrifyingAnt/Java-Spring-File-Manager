@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+  <changeSet id="08" author="terrifyingAnt">
+    <comment>Inserting VersionsList</comment>
+    <insert tableName="versionslist_table">
+      <column name="version_list_id" valueNumeric="1"/>
+      <column name="version_id" valueNumeric="1"/>
+      <column name="file_id" valueNumeric="1"/>
+      <column name="upload_event_id" valueNumeric="1"/>
+    </insert>
+  </changeSet>
+</databaseChangeLog>
